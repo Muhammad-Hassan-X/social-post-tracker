@@ -1,14 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostWatch Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
-<h1>hassan</h1>
-</body>
 
+<!-- Main Wrapper -->
+<div class="d-flex" id="wrapper">
+
+    <!-- Sidebar (Off-canvas on mobile) -->
+    <aside class="sidebar border-end" id="sidebar-wrapper">
+        <div class="sidebar-heading border-bottom">
+            <h4 class="fw-bold"><i class="fas fa-chart-line text-primary"></i> PostWatch</h4>
+        </div>
+        <ul class="nav flex-column sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" href="/">
+                    <i class="fas fa-paste"></i>
+                    <span>Fetch Post</span>
+                </a>
+            </li>
+             <li class="nav-item-heading">
+                <h6 class="text-muted text-uppercase small fw-bold px-3 mt-3 mb-2">Analytics</h6>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/facebook">
+                    <i class="fab fa-facebook"></i>
+                    <span>Facebook</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/youtube">
+                    <i class="fab fa-youtube"></i>
+                    <span>YouTube</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/x">
+                    <i class="fab fa-twitter"></i>
+                    <span>X (Twitter)</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Page Content Wrapper -->
+    <div id="page-content-wrapper">
+        <!-- Top Navigation (Visible on mobile) -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <div class="container-fluid">
+                <button class="btn btn-primary" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <div class="d-lg-none">
+                    <h4 class="fw-bold mb-0"><i class="fas fa-chart-line text-primary"></i> PostWatch</h4>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="container-fluid p-3 p-md-4">
+            
+            <!-- URL Fetcher Card -->
+            <div class="card fetch-card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="card-title fw-bolder">Fetch Post Details</h2>
+                    <p class="text-muted">Paste a URL from X, TikTok, Instagram, or YouTube to get started.</p>
+                    <form action="/fetch" method="POST" class="mt-3">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-link text-muted"></i></span>
+                            <input type="url" name="postUrl" class="form-control border-0" placeholder="https://..." required>
+                            <button class="btn btn-primary fw-bold px-4" type="submit">
+                                <i class="fas fa-search me-2"></i> Fetch
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Content Display Area -->
+            <div class="results-area">
+                <h3 class="fw-bold mb-3">Recently Tracked Posts</h3>
+                
+                <% if (data && data.length > 0) { %>
+                    <% data.forEach(post => { %>
+                        <div class="card post-card shadow-sm mb-3">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fab fa-<%= post.platform.toLowerCase() %> fa-2x me-3 text-<%= post.platform.toLowerCase() %>"></i>
+                                    <div>
+                                        <h5 class="fw-bold mb-0 text-dark">@<%= post.username %></h5>
+                                        <small class="text-muted"><%= new Date(post.postedAt).toLocaleString() %></small>
+                                    </div>
+                                </div>
+                                <p class="card-text mb-4"><%= post.caption %></p>
+                                <div class="d-flex justify-content-around text-center post-stats">
+                                    <div>
+                                        <i class="fas fa-heart text-danger"></i>
+                                        <span class="fw-bold d-block"><%= post.likes.toLocaleString() %></span>
+                                        <small class="text-muted">Likes</small>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-comment text-info"></i>
+                                        <span class="fw-bold d-block"><%= post.comments.toLocaleString() %></span>
+                                        <small class="text-muted">Comments</small>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-share text-success"></i>
+                                        <span class="fw-bold d-block"><%= post.reposts.toLocaleString() %></span>
+                                        <small class="text-muted">Shares</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="alert alert-light text-center p-4" role="alert">
+                        <i class="fas fa-info-circle fa-2x mb-3 text-muted"></i>
+                        <h4 class="alert-heading">No posts yet!</h4>
+                        <p>No posts have been fetched. Paste a URL above to see the results here.</p>
+                    </div>
+                <% } %>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom Script for Sidebar Toggle -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const wrapper = document.getElementById("wrapper");
+
+        sidebarToggle.addEventListener("click", function() {
+            wrapper.classList.toggle("toggled");
+        });
+    });
+</script>
+
+</body>
 </html>
