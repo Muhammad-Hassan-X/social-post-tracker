@@ -17,14 +17,14 @@ const mockData = [
         comments: 22000,
         reposts: 89000
     },
-    {
-        platform: 'YouTube',
-        username: 'mkbhd',
-        postedAt: '2025-06-05T20:00:00Z',
-        caption: 'My review of the new transparent phone is finally live! Check it out.',
-        likes: 875000,
-        comments: 55000,
-        reposts: 15000 // In YouTube context, this might be 'Saves' to playlists
+     {
+        platform: 'TikTok',
+        username: 'therock',
+        postedAt: '2025-06-09T11:00:00Z',
+        caption: 'Morning workout vibes!',
+        likes: 5500000,
+        comments: 65000,
+        reposts: 120000
     }
 ];
 
