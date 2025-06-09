@@ -9,7 +9,124 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --sidebar-bg: #fff;
+            --card-bg: #fff;
+            --border-color: #dee2e6;
+            --muted-text: #6c757d;
+            --hover-bg: #f8f9fa;
+        }
+
+        html.dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #f8f9fa;
+            --sidebar-bg: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #343a40;
+            --muted-text: #adb5bd;
+            --hover-bg: #2a2a2a;
+        }
+
+        body {
+          font-family: 'Inter', sans-serif;
+          overflow-x: hidden;
+          background-color: var(--bg-color);
+          color: var(--text-color);
+          transition: background-color 0.3s, color 0.3s;
+        }
+
+        #wrapper {
+          display: flex;
+        }
+        
+        #sidebar-wrapper {
+          width: 260px;
+          min-height: 100vh;
+          background-color: var(--sidebar-bg);
+          border-right: 1px solid var(--border-color);
+          transition: margin 0.25s ease-out, background-color 0.3s;
+          flex-shrink: 0;
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 1000;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        #page-content-wrapper {
+            flex-grow: 1;
+            min-width: 0;
+            background-color: var(--bg-color);
+            margin-left: 260px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-heading {
+            padding: 1.25rem 1.5rem;
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .sidebar-heading h4 { color: var(--text-color); }
+
+        .sidebar-nav { flex-grow: 1; }
+        .sidebar-nav .nav-link {
+            color: var(--muted-text);
+            font-weight: 500;
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-nav .nav-link i { margin-right: 1rem; width: 24px; text-align: center; font-size: 1.1rem; }
+        .sidebar-nav .nav-link:hover { background-color: var(--hover-bg); color: #0d6efd; border-left-color: #0d6efd; }
+        .sidebar-nav .nav-link.active { color: #0d6efd; font-weight: 600; background-color: var(--hover-bg); border-left-color: #0d6efd; }
+        
+        .dark-mode-toggle { padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); }
+        .dark-mode-toggle .form-check-label { color: var(--muted-text); }
+
+
+        .card, .alert { background-color: var(--card-bg); color: var(--text-color); border-color: var(--border-color); }
+        .fetch-card, .search-card, .post-card { border-radius: 1rem; }
+        .post-card:hover { transform: translateY(-5px); box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.07) !important; }
+        .stat-box { transition: transform 0.2s; text-decoration: none; display: block; color: var(--text-color); }
+        .stat-box:hover { transform: translateY(-5px); }
+        
+        .form-control, .input-group-text { background-color: var(--bg-color); color: var(--text-color); border-color: var(--border-color); }
+        .form-control::placeholder { color: var(--muted-text); }
+        .text-dark { color: var(--text-color) !important; }
+
+        /* --- FIX FOR DARK MODE TEXT --- */
+        html.dark-mode .text-muted {
+            color: var(--muted-text) !important;
+        }
+        html.dark-mode .input-group-text {
+            color: var(--muted-text);
+        }
+        /* --- END FIX --- */
+
+        .text-instagram { color: #E1306C; }
+        .text-youtube { color: #FF0000; }
+        .text-x { color: #000000; }
+        .text-tiktok { color: #00f2ea; }
+        html.dark-mode .text-x { color: #fff; } /* Adjust X icon for dark mode */
+
+        .navbar { display: none; background-color: var(--card-bg) !important; border-bottom: 1px solid var(--border-color) !important; }
+        
+        @media (max-width: 992px) {
+            #sidebar-wrapper { margin-left: -260px; }
+            #page-content-wrapper { margin-left: 0; width: 100%; }
+            #wrapper.toggled #sidebar-wrapper { margin-left: 0; }
+            .navbar { display: flex !important; }
+        }
+    </style>
 </head>
 <body>
 
@@ -17,7 +134,7 @@
 
     <!-- Sidebar -->
     <aside class="sidebar border-end" id="sidebar-wrapper">
-        <div class="sidebar-heading border-bottom">
+        <div class="sidebar-heading">
             <h4 class="fw-bold"><i class="fas fa-chart-line text-primary"></i> PostWatch</h4>
         </div>
         <ul class="nav flex-column sidebar-nav">
@@ -55,12 +172,19 @@
                 </a>
             </li>
         </ul>
+        <!-- Dark Mode Toggle -->
+        <div class="dark-mode-toggle mt-auto">
+             <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="darkModeSwitch">
+                <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
+            </div>
+        </div>
     </aside>
 
     <!-- Page Content Wrapper -->
     <div id="page-content-wrapper">
         <!-- Top Navigation (Mobile) -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid">
                 <button class="btn btn-primary" id="sidebarToggle"><i class="fas fa-bars"></i></button>
                 <div class="d-lg-none">
@@ -81,28 +205,28 @@
                 </div>
                 <div class="row text-center">
                     <div class="col-lg-3 col-md-6 mb-4">
-                        <a href="/users" class="stat-box h-100 p-4 border rounded-3 bg-white shadow-sm">
+                        <a href="/users" class="stat-box h-100 p-4 border rounded-3 shadow-sm">
                             <i class="fas fa-users fa-3x text-primary mb-3"></i>
                             <h2 class="fw-bolder">1.3K</h2>
                             <p class="text-muted mb-0">Total Users</p>
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-4">
-                         <a href="/instagram" class="stat-box h-100 p-4 border rounded-3 bg-white shadow-sm">
+                         <a href="/instagram" class="stat-box h-100 p-4 border rounded-3 shadow-sm">
                             <i class="fab fa-instagram fa-3x text-instagram mb-3"></i>
                             <h2 class="fw-bolder">2.7K</h2>
                             <p class="text-muted mb-0">Instagram Posts</p>
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-4">
-                         <a href="/tiktok" class="stat-box h-100 p-4 border rounded-3 bg-white shadow-sm">
+                         <a href="/tiktok" class="stat-box h-100 p-4 border rounded-3 shadow-sm">
                             <i class="fab fa-tiktok fa-3x text-tiktok mb-3"></i>
                             <h2 class="fw-bolder">985</h2>
                             <p class="text-muted mb-0">TikTok Videos</p>
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-4">
-                         <a href="/x" class="stat-box h-100 p-4 border rounded-3 bg-white shadow-sm">
+                         <a href="/x" class="stat-box h-100 p-4 border rounded-3 shadow-sm">
                             <i class="fab fa-twitter fa-3x text-x mb-3"></i>
                             <h2 class="fw-bolder">46</h2>
                             <p class="text-muted mb-0">X Posts</p>
@@ -117,8 +241,8 @@
                     <h2 class="card-title fw-bolder">Search Posts</h2>
                      <form action="/search" method="GET" class="mt-3">
                         <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-0"><i class="fas fa-user text-muted"></i></span>
-                            <input type="text" name="query" class="form-control border-0" placeholder="Search by username or link..." required>
+                            <span class="input-group-text"><i class="fas fa-user text-muted"></i></span>
+                            <input type="text" name="query" class="form-control" placeholder="Search by username or link..." required>
                             <button class="btn btn-primary fw-bold px-4" type="submit">
                                 <i class="fas fa-search me-2"></i> Search
                             </button>
@@ -134,8 +258,8 @@
                     <p class="text-muted">Paste a URL to add a new post to the tracker.</p>
                     <form action="/fetch" method="POST" class="mt-3">
                         <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-0"><i class="fas fa-link text-muted"></i></span>
-                            <input type="url" name="postUrl" class="form-control border-0" placeholder="https://..." required>
+                            <span class="input-group-text"><i class="fas fa-link text-muted"></i></span>
+                            <input type="url" name="postUrl" class="form-control" placeholder="https://..." required>
                             <button class="btn btn-primary fw-bold px-4" type="submit">
                                 <i class="fas fa-plus me-2"></i> Fetch
                             </button>
@@ -179,9 +303,16 @@
                                         <small class="text-muted">Comments</small>
                                     </div>
                                     <div>
-                                        <i class="fas fa-share text-success"></i>
-                                        <span class="fw-bold d-block"><%= post.reposts.toLocaleString() %></span>
-                                        <small class="text-muted">Shares</small>
+                                        <!-- Conditional Retweet Icon -->
+                                        <% if (post.platform === 'X') { %>
+                                            <i class="fas fa-retweet text-success"></i>
+                                            <span class="fw-bold d-block"><%= post.reposts.toLocaleString() %></span>
+                                            <small class="text-muted">Retweets</small>
+                                        <% } else { %>
+                                            <i class="fas fa-share text-success"></i>
+                                            <span class="fw-bold d-block"><%= post.reposts.toLocaleString() %></span>
+                                            <small class="text-muted">Shares</small>
+                                        <% } %>
                                     </div>
                                 </div>
                             </div>
@@ -204,9 +335,34 @@
     document.addEventListener("DOMContentLoaded", function() {
         const sidebarToggle = document.getElementById("sidebarToggle");
         const wrapper = document.getElementById("wrapper");
-        sidebarToggle.addEventListener("click", function() {
-            wrapper.classList.toggle("toggled");
-        });
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        const rootHtml = document.documentElement;
+
+        // Sidebar Toggle
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener("click", function() {
+                wrapper.classList.toggle("toggled");
+            });
+        }
+
+        // Dark Mode Logic
+        if(darkModeSwitch) {
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                rootHtml.classList.add('dark-mode');
+                darkModeSwitch.checked = true;
+            }
+
+            darkModeSwitch.addEventListener('change', function() {
+                if(this.checked) {
+                    rootHtml.classList.add('dark-mode');
+                    localStorage.setItem('darkMode', 'enabled');
+                } else {
+                    rootHtml.classList.remove('dark-mode');
+                    localStorage.setItem('darkMode', 'disabled');
+                }
+            });
+        }
     });
 </script>
 
